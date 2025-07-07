@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="description" content="Raven LLM Route - Enterprise AI Infrastructure Dashboard" />
+    <title>Raven LLM Route</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-container">
+                        <div class="logo-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="logo-text">
+                            <h1>Raven LLM Router</h1>
+                            <p>Production-grade AI Infrastructure</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <!-- (Intentionally left empty as per user request) -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- System Status -->
+            <div class="system-status">
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>System Status</h3>
+                        <p>All services operational</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Interface -->
+            <div class="interface-grid">
+                <!-- Left Column -->
+                <div class="left-column">
+                    <!-- Model Selection -->
+                    <div class="glass-card model-selector">
+                        <div class="card-header">
+                            <h2><i class="fas fa-cogs"></i> Model Selection</h2>
+                            <p>Choose your routing strategy</p>
+                        </div>
+                        
+                        <div class="strategy-toggle">
+                            <button type="button" class="strategy-btn active" data-strategy="fast">
+                                <div class="strategy-icon">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="strategy-content">
+                                    <span class="strategy-name">Fast Mode</span>
+                                    <small>Model A Priority</small>
+                                </div>
+                                <div class="strategy-metrics">
+                                    <span class="latency">200-800ms</span>
+                                    <span class="reliability">85%</span>
+                                </div>
+                            </button>
+                            <button type="button" class="strategy-btn" data-strategy="accurate">
+                                <div class="strategy-icon">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div class="strategy-content">
+                                    <span class="strategy-name">Accurate Mode</span>
+                                    <small>Model B Priority</small>
+                                </div>
+                                <div class="strategy-metrics">
+                                    <span class="latency">800-2000ms</span>
+                                    <span class="reliability">95%</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Query Interface -->
+                    <div class="glass-card query-interface">
+                        <div class="card-header">
+                            <h2><i class="fas fa-comments"></i> Query Interface</h2>
+                            <p>Send requests to your selected model</p>
+                        </div>
+                        
+                        <form id="inferenceForm" class="query-form">
+                            <div class="input-container">
+                                <div class="model-indicator">
+                                    <div class="model-dot active-model"></div>
+                                    <span id="currentModel">Model A (Fast)</span>
+                                    <div class="model-stats">
+                                        <i class="fas fa-clock"></i>
+                                        <span id="currentLatency">200-800ms</span>
+                                    </div>
+                                </div>
+                                
+                                <textarea
+                                    id="prompt"
+                                    class="query-textarea"
+                                    placeholder="Enter your query here... (e.g., 'Explain the benefits of LLM routing systems')"
+                                ></textarea>
+                                
+                                <div class="query-footer">
+                                    <div class="query-stats">
+                                        <span id="charCount">Characters: 0</span>
+                                        <span id="tokenEstimate" style="display: none;">• Est. tokens: ~0</span>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Send Query
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Quick Actions -->
+                        <div class="quick-actions">
+                            <div class="quick-actions-title">Quick Actions</div>
+                            <div class="quick-actions-grid">
+                                <button class="quick-action-btn" data-query="What is machine learning?">What is machine learning?</button>
+                                <button class="quick-action-btn" data-query="Explain neural networks">Explain neural networks</button>
+                                <button class="quick-action-btn" data-query="Compare different AI models">Compare different AI models</button>
+                                <button class="quick-action-btn" data-query="How do transformers work?">How do transformers work?</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-column">
+                    <!-- Response Display -->
+                    <div class="glass-card response-section" id="responseSection" style="display: none;">
+                        <div class="card-header">
+                            <h2><i class="fas fa-reply"></i> Response</h2>
+                            <p>Model response and details</p>
+                        </div>
+                        
+                        <div class="response-container">
+                            <div class="response-box" id="responseBox"></div>
+                            <div class="response-details" id="responseDetails"></div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="errorMessage" class="error-message" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics Dashboard -->
+            <div class="metrics-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> System Metrics</h2>
+                    <p>Real-time performance monitoring and analytics</p>
+                </div>
+                
+                <!-- Key Metrics Grid -->
+                <div class="metrics-grid" id="metricsGrid">
+                    <!-- Metrics will be populated by JavaScript -->
+                </div>
+                
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-container" id="chartSection" style="display: none;">
+                        <div class="glass-card chart-card">
+                            <div class="chart-header">
+                                <h3><i class="fas fa-chart-area"></i> Latency Trends</h3>
+                                <p>Performance over time</p>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="latencyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Section -->
+            <div class="logs-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list-alt"></i> Recent Inference Logs</h2>
+                    <p>Live request history and system events</p>
+                </div>
+                
+                <div class="logs-container" id="logsContainer">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No inference logs yet. Try sending a prompt!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Information -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> System Information</h2>
+                    <p>Configuration and operational details</p>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="glass-card info-card">
+                        <div class="info-header">
+                            <div class="info-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3>Model A (Fast)</h3>
+                        </div>
+                        <ul class="info-list">
+                            <li><strong>Latency:</strong> 200-800ms</li>
+                            <li><strong>Failure Rate:</strong> 15%</li>
+                            <li><strong>Use Case:</strong> Quick responses</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card info-card">
+                        <div class="info-header">
+                            <div class="info-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <h3>Model B (Accurate)</h3>
+                        </div>
+                        <ul class="info-list">
+                            <li><strong>Latency:</strong> 800-2000ms</li>
+                            <li><strong>Failure Rate:</strong> 5%</li>
+                            <li><strong>Use Case:</strong> High-quality responses</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-card info-card">
+                        <div class="info-header">
+                            <div class="info-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <h3>Retry Logic</h3>
+                        </div>
+                        <ul class="info-list">
+                            <li><strong>Max Retries:</strong> 3</li>
+                            <li><strong>Retry Delay:</strong> 100ms</li>
+                            <li><strong>Auto Fallback:</strong> Enabled</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
