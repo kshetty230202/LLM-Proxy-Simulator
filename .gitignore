@@ -21,3 +21,11 @@ backend/.env
 
 # Docker
 **/.dockerignore
+
+# Terraform
+terraform.tfstate
+terraform.tfstate.*
+.terraform/
+*.tfvars
+*.tfvars.json
+crash.log

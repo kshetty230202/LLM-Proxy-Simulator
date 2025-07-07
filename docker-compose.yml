@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: llm_proxy_postgres
+    environment:
+      POSTGRES_DB: llm_proxy
+      POSTGRES_USER: llm_user
+      POSTGRES_PASSWORD: llm_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U llm_user -d llm_proxy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - llm_network
+
+  # Python Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: llm_proxy_backend
+    environment:
+      DATABASE_URL: postgresql://llm_user:llm_password@postgres:5432/llm_proxy
+      SECRET_KEY: your-secret-key-change-this-in-production
+      DEBUG: "False"
+      HOST: 0.0.0.0
+      PORT: 8000
+      MODEL_A_FAILURE_RATE: 0.15
+      MODEL_A_MIN_LATENCY: 200
+      MODEL_A_MAX_LATENCY: 800
+      MODEL_B_FAILURE_RATE: 0.05
+      MODEL_B_MIN_LATENCY: 800
+      MODEL_B_MAX_LATENCY: 2000
+      MAX_RETRIES: 3
+      RETRY_DELAY_MS: 100
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - llm_network
+    restart: unless-stopped
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: llm_proxy_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - llm_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  llm_network:
+    driver: bridge 

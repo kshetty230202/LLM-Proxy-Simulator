@@ -1,0 +1,12 @@
+# AWS Configuration
+aws_region = "us-east-1"
+
+# Database Configuration
+db_password = "your-secure-database-password-here"
+
+# Application Configuration
+secret_key = "your-secret-key-change-this-in-production"
+
+# Environment
+environment = "dev"
+project_name = "llm-proxy" 
